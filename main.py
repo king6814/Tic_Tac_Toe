@@ -46,14 +46,22 @@ class layers():
             for w in range(len(self.layer[i])):
                 self.layer[i][w].value=0
 
-    def save_weight(self):
-        with open('weght_data.csv','w') as file:
+    def save_weight(self,filename='weght_data.txt'):
+        with open(filename,'w') as file:
             for i in range(len(self.layer)-2):
                 for w,weights in enumerate(self.layer[i]):
                     file.write('/'.join(map(str,weights.node_weight)))
                     if w < len(self.layer[i])-1:
                         file.write(',')
                 file.write('\n')
+    
+    def load_weight(self,filename='weght_data.txt'):
+        with open(filename,'r') as file:
+            for i in range(len(self.layer)-2):
+                for w,weights in enumerate((file.readline()[:-1]).split(',')):
+                    weights=list(map(float, weights.split('/')))
+                    if len(self.layer[i][w].node_weight) == len(weights):
+                        self.layer[i][w].node_weight = weights[:]
 
     def activate(self,input_data,activate_function):
         
@@ -74,6 +82,7 @@ class layers():
 
 a=layers((9,9,9,9,9))
 a.show_weight()
-a.activate((1,2,3,4,5,6,7,8,9),activate_function.sigmoid)
-a.show_value()
-a.save_weight()
+a.load_weight()
+a.show_weight()
+# a.activate((1,2,3,4,5,6,7,8,9),activate_function.sigmoid)
+# a.show_value()
