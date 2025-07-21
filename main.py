@@ -13,6 +13,24 @@ class activate_function():
 
     def tanh(value):
         return math.tanh(value)             #(e**value-e**(-1*value))/(e**value+e**(-1*value))
+    
+class mse():
+    @staticmethod
+    def loss(expect,real):
+        return ((expect-real)**2)/2
+
+    @staticmethod
+    def gradient(expect,real):
+        return expect-real
+
+class ce():
+    @staticmethod
+    def loss(expect,real):
+        return -1*real*math.log(expect)
+    
+    @staticmethod
+    def gradient(expect,real):
+        return -1*real/expect
 
 
 class node():
