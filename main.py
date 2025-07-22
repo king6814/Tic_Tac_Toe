@@ -147,9 +147,9 @@ class layers():
 
 
 
-a=layers((9,9,9,9,9),sigmoid)
+a=layers((9,9,9,9,9),sigmoid,ce)
 # a.show_weight()
 # a.load_weight()
 # a.show_weight()
-a.activate((1,2,3,4,5,6,7,8,9))
+a.run((1,1,1,1,1,1,1,1,1))
 a.show_value()
