@@ -53,6 +53,14 @@ class ce():
     @staticmethod
     def gradient(expect,real):
         return -1*real/expect
+    
+def softmax_function(output_layer):
+    output=[math.exp(i) for i in output_layer]
+    sum_output=sum(output)
+    output=[i/sum_output for i in output]
+
+    result=output.index(max(output))
+    return result
 
 
 class node():
@@ -106,7 +114,7 @@ class layers():
                     if len(self.layer[i][w].node_weight) == len(weights):
                         self.layer[i][w].node_weight = weights[:]
 
-    def run(self,input_data):
+    def run(self,input_data,do_softmax=False):
         
         self.reset_value()
 
@@ -121,6 +129,11 @@ class layers():
             
             for w in self.layer[i+1]:
                 w.value = self.activate_function.loss(w.value)
+        
+        if do_softmax:
+            return softmax_function([i.value for i in self.layer[-2]])
+        else:
+            return [i.value for i in self.layer[-2]]
 
     def backpropagation(self,chain_value,layer_index,node_index):
         if layer_index==0:
@@ -147,9 +160,49 @@ class layers():
 
 
 
-a=layers((9,9,9,9,9),sigmoid,ce)
-# a.show_weight()
-# a.load_weight()
-# a.show_weight()
-a.run((1,1,1,1,1,1,1,1,1))
-a.show_value()
+if __name__ == "__main__":
+    # a=layers((9,9,9,9,9),relu,mse,running_weight=0.01)
+    b=layers((9,9,9,9,9),sigmoid,mse,running_weight=0.001)
+    # c=layers((9,9,9,9,9),tanh,mse,running_weight=0.01)
+    for qwe in range(576,1000):
+        with open(f'data/data{qwe}.txt','r') as f:
+            qqq=0
+            while True:
+                data=f.readline()[:-1].split('/')
+                if data[0]=='': break
+                
+                data[0]=list(map(int, data[0].split(',')))
+                data[1]=int(data[1])
+                # a.run(data[0])
+                b.run(data[0])
+                # c.run(data[0])
+    
+                correct_label=[0 for i in range(9)]
+                correct_label[data[1]]=1
+                # a.do_gradient_descent(correct_label)
+                b.do_gradient_descent(correct_label)
+                # c.do_gradient_descent(correct_label)
+                qqq+=1
+                if qqq%1000==0:
+                    print(qqq)
+    
+                
+    
+            # a.save_weight(filename='weight_data1.txt')
+            b.save_weight(filename='weight_data2.txt')
+            # c.save_weight(filename='weight_data3.txt')
+        print(f'{qwe+1}/{1000}')
+    
+    
+    
+    # a.load_weight(filename='weight_data1.txt')
+    # a.run([0,0,0,0,0,0,0,0,0])
+    # a.show_value()
+    
+    b.load_weight(filename='weight_data2.txt')
+    b.run([0,0,0,0,0,0,0,0,0])
+    b.show_value()
+    
+    # c.load_weight(filename='weight_data3.txt')
+    # c.run([0,0,0,0,0,0,0,0,0])
+    # c.show_value()
